@@ -16,7 +16,7 @@
 
 import logging
 import os
-
+import json
 import time
 from cloudinstall.config import Config
 from cloudinstall.installbase import InstallBase
@@ -70,14 +70,25 @@ class SingleInstall(InstallBase):
             tries = tries + 1
 
     def cloud_init_finished(self):
-        """ checks the log to see if cloud-init finished
+        """checks cloud-init result.json in container to find out status
+
+        returns True if cloud-init finished with no errors, False if
+        it's not done yet, and raises an exception if it had errors.
         """
-        log_file = os.path.join(self.container_abspath,
-                                'rootfs/var/log/cloud-init-output.log')
-        out = utils.get_command_output('sudo tail -n1 {0}'.format(log_file))
-        if 'finished at' in out['output']:
+        cmd = 'cat /run/cloud-init/result.json 2> /dev/null'
+        result_json = utils.container_run(self.container_run, cmd)
+
+        if result_json == '':
+            return False
+
+        ret = json.loads(result_json)
+        errors = ret['v1']['errors']:
+        if len(errors):
+            log.error("Container cloud-init finished with "
+                      "errors: {}".format(errors))
+            raise Exception("Container cloud-init returned errors")
+        else:
             return True
-        return False
 
     def copy_installdata_and_set_perms(self):
         """ copies install data and sets permissions on files/dirs
