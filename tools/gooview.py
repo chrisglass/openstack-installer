@@ -20,14 +20,11 @@
 """
 
 import sys
-import os
 sys.path.insert(0, '../cloudinstall')
 
 from cloudinstall import gui, log
 from cloudinstall.core import DisplayController
-from cloudinstall.config import Config
-from cloudinstall.juju import JujuState
-from macumba import JujuClient
+
 
 class FakeOpts:
     noui = False
