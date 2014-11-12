@@ -87,7 +87,7 @@ case $WHAT in
     echo @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     echo Landscape installed system.
     echo
-    echo Removing a Landscape environment is could potentionally be
+    echo Removing a Landscape environment could potentionally be
     echo destructive. Therefore, it is recommended to uninstall
     echo the Landscape bits manually.
     echo
